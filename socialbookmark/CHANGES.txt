@@ -1,0 +1,71 @@
+
+  ---------------------------------------------------------------------------------
+  Social Bookmark Block for Moodle
+  Copyright 2013-2014 Kyle Goslin, Daniel McSweeney
+  Institute of Technology Blanchardstown
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ---------------------------------------------------------------------------------
+
+Version: 1.3
+Date: 1st April 2014
+- Minimum requirement of at least one tag must be added to a bookmark before submission, changed to a required field.
+- Stemmed URL added to the bookmark title, to show the user what site the bookmark will send them to.
+- Limiter added to the desc text on a bookmark, only allowing 300 chars to be seen to prevent overflowing.
+- Description title text aligned top left
+
+
+Version: 1.2
+Date: 10th March 2014
+
+- Icon sizes changed to 16x16 on block level.
+- Icon sizes changed to 16x16 on navigation menus.
+- Icon sizes on settings.php updated.
+- AUTHORS.txt file has been added, including contact information.
+- Updated icon for view option depicting a magnifying glass.
+- Link to settings removed from settings.php
+- Removed back icon and link from settings.php
+- Settings.php "Save" Button updated to be "Add Entered tag"
+- A text description field has been added to the settings.php to aid the process of describing the page and the functionality.
+
+- Cloud generation default size is now starting at 10px and not 8px. Px size is now: 10, 12, 15, 17, 20.
+
+- Yellow removed from background colour of single bookmarks.
+- Border removed from list of bookmarks.
+- Border removed from add.php
+- Added "Filter By" to lang string and updated mange.php
+- Limit of 10 added to the number of bookmarks that can be outputted on the first page.
+- Regular gets removed from manage.php
+
+---------------------------------------------------------
+
+Version: 1.1 
+Date: 7th March 2014
+
+- Width of the description box on the add.php page was made smaller.
+- Validation added to the URL during viewing, to ensure a http or https was added.
+- Title, URL and Tag boxes have been made wider
+- Back button added
+- Updated lang strings
+- Removed old approve functionality
+- Old post references updated to moodle lib style.
+- Version number has been updated
+
+
+---------------------------------------------------------
+
+Version: 1.0
+Date 10th Feb 2014
+Details: Original Release
+---------------------------------------------------------
