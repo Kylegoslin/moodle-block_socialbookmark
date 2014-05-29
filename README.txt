@@ -1,6 +1,6 @@
-<?php
 
-/*
+
+
 	---------------------------------------------------------------------------------
  	Social Bookmark Block for Moodle
  	Copyright 2013-2014 Kyle Goslin, Daniel McSweeney
@@ -20,18 +20,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	---------------------------------------------------------------------------------
 
-*/
-class block_socialbookmark_edit_form extends block_edit_form {
+    Documentation can be found at: 
 
-    protected function specific_definition($mform) {
-
-        // Section header title according to language file.
-        $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
-
-        // A sample string variable with a default value.
-        $mform->addElement('text', 'config_text', get_string('blockstring', 'block_socialbookmark'));
-        $mform->setDefault('config_text', 'default value');
-        $mform->setType('config_text', PARAM_MULTILANG);        
-
-    }
-}
+    http://docs.moodle.org/26/en/block_socialbookmark

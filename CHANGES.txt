@@ -17,6 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ---------------------------------------------------------------------------------
+Version 1.5
+Date: 29th May 2014
+- Updated to work on Moodle 2.7.
+- DB Calls clean up
+- Code clean up
+
+Version 1.4
+Date: 10th April 2014
+
+- New documentation link: http://docs.moodle.org/26/en/block_socialbookmark
+- URL reference updated on pages
+- Deleted old js folder
+- Updated copyright info
+- Removed old settings page
 
 Version: 1.3
 Date: 1st April 2014
