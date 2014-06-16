@@ -26,11 +26,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once("../../config.php");
-
+require_login();
 $type = optional_param('type','', PARAM_TEXT);
 
 if($type == 'saverating'){
-    save_rating_record();
+    block_socialbookmark_save_rating_record();
 }
 
 
@@ -39,7 +39,7 @@ if($type == 'saverating'){
 * Add a user submitted rating to the database. If a record already exists from that
 * user for that bookmark, then update the record.
 */
-function save_rating_record() {
+function block_socialbookmark_save_rating_record() {
 
 	global $DB;
 
@@ -56,7 +56,7 @@ function save_rating_record() {
 
   $exists = $DB->record_exists('block_socialbookmark_ratings', array('userid'=>$userid, 'bm_id'=>$bkid)); 
   
-  if ($exists ==1 ) {
+  if ($exists == 1) {
       $recid = $DB->get_field('block_socialbookmark_ratings', 'id', 
                               array('userid'=>$userid, 'bm_id'=>$bkid), $strictness=IGNORE_MULTIPLE);
       $record = new stdClass();

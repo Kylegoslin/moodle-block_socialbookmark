@@ -32,6 +32,11 @@ $string['descfoo'] = 'Config description';
 $string['headerconfig'] = 'Config section header';
 $string['labelfoo'] = 'Config label';
 $string['socialbookmark:addinstance'] = 'Add social bookmark block';
+$string['socialbookmark:addbookmark'] = 'Add bookmark';
+
+$string['socialbookmark:deletebookmark'] = 'Delete bookmark';
+$string['socialbookmark:viewbookmarks'] = 'View bookmarks';
+
 $string['socialbookmark:myaddinstance'] = 'Add a social bookmark block to my Moodle';
 $string['pluginname'] = 'Social bookmark';
 $string['socialbookmark'] = 'Social bookmark';
@@ -66,7 +71,7 @@ $string['filterby'] = 'Filter by';
 $string['rating'] = 'Rating';
 $string['tag'] = 'Tag';
 $string['user'] = 'User';
-
+$string['removeallfilters'] = 'Remove All Filters';
 $string['backtocourse'] = 'Back to course';
 $string['tagsforthiscourse'] = 'Tags for this course';
 $string['addenteredtag'] = 'Add entered tag';

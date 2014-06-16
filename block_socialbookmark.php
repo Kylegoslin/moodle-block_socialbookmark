@@ -67,12 +67,12 @@ class block_socialbookmark extends block_base {
     /** Get the content for the block */
     public function get_content() {
         if ($this->content !== null) {
-          return $this->content;
+            return $this->content;
         }
  
         $cid = optional_param('id', '', PARAM_INT);
         $this->content         =  new stdClass;
-        $this->content->text   = get_cloud($cid, 6, '../blocks/socialbookmark/admin/').'<p></p><hr> 
+        $this->content->text   = block_socialbookmark_get_cloud($cid, 6, '../blocks/socialbookmark/admin/').'<p></p><hr> 
     
         <a href="../blocks/socialbookmark/add.php?cid='.$cid.'">
         <img style="height:16px; width:16px" src="../blocks/socialbookmark/img/fave.png"> '.

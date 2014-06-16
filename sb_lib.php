@@ -25,11 +25,12 @@
  * @copyright  2014 Kyle Goslin, Daniel McSweeney
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+defined('MOODLE_INTERNAL') || die();
+require_login();
 /** Convert a stored tag name into the corrent displayable name.
 * @param int $tid tag id
 */
-function tag_id_to_name($tid) {
+function block_socialbookmark_tag_id_to_name($tid) {
 
     global $DB;
 
@@ -48,7 +49,7 @@ function tag_id_to_name($tid) {
 * @param int $taglimit limit on number of tags
 * @param text $urlroot root url
 */
-function get_cloud($cid, $taglimit, $urlroot) {
+function block_socialbookmark_get_cloud($cid, $taglimit, $urlroot) {
 
     global $DB;
     $html = '
@@ -69,20 +70,20 @@ function get_cloud($cid, $taglimit, $urlroot) {
     $countarray = array();
 
     foreach ($result as $rec) {
-            // Break down record by spaces
-	        $values = explode(' ', $rec->tagid);
+        // Break down record by spaces
+	    $values = explode(' ', block_socialbookmark_get_cloud_tags($cid));
 
 
-            foreach ($values as $singleid) {
-                if (!empty($singleid)) {
-                    if (array_key_exists($singleid, $countarray)) {
-                        $newvalue = $countarray[$singleid] + 1;
-                        $countarray[$singleid] = $newvalue;
+        foreach ($values as $singleid) {
+            if (!empty($singleid)) {
+                if (array_key_exists($singleid, $countarray)) {
+                    $newvalue = $countarray[$singleid] + 1;
+                    $countarray[$singleid] = $newvalue;
 
-                    } else {
-                            $countarray[$singleid] = 1;
-                           }
-			}
+                } else {
+                        $countarray[$singleid] = 1;
+                       }
+		   }
 		}
 	}
 
@@ -95,12 +96,12 @@ $jumpSize = 0;
 
 
 foreach ($countarray as $key => $value) {
-        if ($value > $max) {
-            $max = $value;
-        }
-        if ($value < $min) {
-            $min = $value;
-        }
+    if ($value > $max) {
+        $max = $value;
+    }
+    if ($value < $min) {
+        $min = $value;
+    }
 
 }
 
@@ -111,32 +112,68 @@ $jumpsize = ($max - $min) / 5;
 // to decide their font sizes
 $limitcounter = 0;
 foreach ($countarray as $key => $value) {
-        if ($limitcounter < $taglimit) {
-	        if ($value >= $min && $value <= ($min + $jumpsize)) {
-                $html .= '<span style="font-size:10px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">'. 
-                          tag_id_to_name($key) . '</a></span> '; 
-            }
-            else if ($value > ($min+$jumpsize) && $value <= ($min + ($jumpsize*2))) {
-	                $html .= '<span style="font-size:12px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">'. 
-                             tag_id_to_name($key) . '</a></span> '; 
-            } 
-            else if ($value > ($min+($jumpsize*2)) && $value <= ($min + ($jumpsize*3))) {
-                    $html .= '<span style="font-size:15px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' .
-                             tag_id_to_name($key) . '</a></span> '; 
-			} 
-			else if ($value > ($min+($jumpsize*3)) && $value <= ($min + ($jumpsize*4))) {
-					$html .= '<span style="font-size:17px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' .
-                             tag_id_to_name($key) . '</a></span> '; 
-			}
-			else if ($value > ($min+($jumpsize*4)) && $value <= ($min + ($jumpsize*5))) {
-				    $html .= '<span style="font-size:20px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' . 
-                             tag_id_to_name($key) . '</a></span> '; 
-            } 
+    if ($limitcounter < $taglimit) {
+	    if ($value >= $min && $value <= ($min + $jumpsize)) {
+            $html .= '<span style="font-size:10px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">'. 
+                      block_socialbookmark_tag_id_to_name($key) . '</a></span> '; 
         }
+        else if ($value > ($min+$jumpsize) && $value <= ($min + ($jumpsize*2))) {
+	        $html .= '<span style="font-size:12px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">'. 
+                             block_socialbookmark_tag_id_to_name($key) . '</a></span> '; 
+        } 
+        else if ($value > ($min+($jumpsize*2)) && $value <= ($min + ($jumpsize*3))) {
+            $html .= '<span style="font-size:15px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' .
+                             block_socialbookmark_tag_id_to_name($key) . '</a></span> '; 
+		} 
+		else if ($value > ($min+($jumpsize*3)) && $value <= ($min + ($jumpsize*4))) {
+			$html .= '<span style="font-size:17px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' .
+                             block_socialbookmark_tag_id_to_name($key) . '</a></span> '; 
+		}
+		else if ($value > ($min+($jumpsize*4)) && $value <= ($min + ($jumpsize*5))) {
+		    $html .= '<span style="font-size:20px"><a href="'.$urlroot.'manage.php?id='.$cid.'&tagid='.$key.'&p=tag">' . 
+                             block_socialbookmark_tag_id_to_name($key) . '</a></span> '; 
+        } 
+    }
         $limitcounter++;
 }
 
 return $html . '</div>';
+
+}
+
+/** 
+* Get a list of tags tags for a course from a course id.
+* @param $cid course id
+*/
+function block_socialbookmark_get_course_tags($cid) {
+
+    global $DB, $CFG;
+    $bookmarkassc = $DB->get_records('block_socialbookmark_tags', array('courseid'=>$cid)); 
+    $ids = '';
+    foreach ($bookmarkassc as $rec){
+
+        $ids .= ' ' . $rec->id;
+    }
+
+
+    return $ids;
+}
+
+
+/** 
+* Get a list of tags for a cloud
+* @param $cid course id
+*/
+function block_socialbookmark_get_cloud_tags($cid) {
+
+    global $DB, $CFG;
+    $bookmarkassc = $DB->get_records('block_socialbookmark_assc', array('cid'=>$cid)); 
+    $ids = '';
+    foreach ($bookmarkassc as $rec){
+        $ids .= ' ' . $rec->tagid;
+    }
+
+    return $ids;
 
 }
 
@@ -145,12 +182,12 @@ return $html . '</div>';
 *if it doesn't, then add it in
 * @param text $link link to validate
 */
-function validate_link($link) {
+function block_socialbookmark_validate_link($link) {
 
     if (substr( $link, 0, 4 ) === "http") {
         return $link;
     } else {
-            $link = 'http://' . $link;
-            return $link;
+        $link = 'http://' . $link;
+        return $link;
 	}
 }

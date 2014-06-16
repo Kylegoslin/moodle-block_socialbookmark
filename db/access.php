@@ -29,8 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
-    'block/socialbookmark:myaddinstance' => array(
+        'block/socialbookmark:myaddinstance' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
@@ -51,5 +50,50 @@ $capabilities = array(
         ),
 
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
+    ),
+    'block/socialbookmark:addbookmark' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW,
+            'student'        => CAP_ALLOW
+           
+        ),
+
+       
+    ),
+    'block/socialbookmark:deletebookmark' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW,
+            'student'        => CAP_ALLOW
+            
+        ),
+
+       
+    ),
+    'block/socialbookmark:viewbookmarks' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+           'teacher'        => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager'          => CAP_ALLOW,
+            'student'        => CAP_ALLOW
+           
+        ),
+
+       'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 );

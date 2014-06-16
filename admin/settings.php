@@ -26,8 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once("../../../config.php");
-
 global $CFG, $DB;
+require_login();
 $formpath = "$CFG->libdir/formslib.php";
 require_once($formpath);
 ?>
@@ -57,7 +57,7 @@ $PAGE->navbar->add(get_string('socialbookmark', 'block_socialbookmark'), new moo
 $PAGE->navbar->add(get_string('settings', 'block_socialbookmark'));
 $PAGE->set_url('/blocks/socialbookmark/admin/settings.php');
 $PAGE->set_context(context_system::instance());
-
+echo $OUTPUT->header();
 $d = optional_param('d',0, PARAM_INT);
 
 
@@ -68,19 +68,9 @@ if (!empty($d)) {
 	$DB->delete_records('block_socialbookmark_tags', array('id'=>$d));
     }
 }
-if ($_POST) {
-    $id = optional_param('cid','', PARAM_INT);
-  	$record = new stdClass();
-    $record->courseid = $id;
-	$tagtitle = optional_param('tagtitle', '', PARAM_TEXT);   
-  	$record->tagname =	$tagtitle;
 
-  	$DB->insert_record('block_socialbookmark_tags', $record, $returnid=true, $bulk=false);
-  	
-  	echo '<script>window.location="settings.php?id='.$id.'"; </script>';
-  	die;
-  	
-  }
+
+
 
 
 /**
@@ -90,7 +80,7 @@ if ($_POST) {
 * @copyright 2014 Kyle Goslin, Daniel McSweeney
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
-class add_form extends moodleform {
+class block_socialbookmark_add_form extends moodleform {
  
     /** Main settings definition */
     function definition() {
@@ -104,7 +94,6 @@ class add_form extends moodleform {
 		$mform->addElement('header', 'mainheader','<span style="font-size:18px">'.  get_string('settings','block_socialbookmark'). '</span>');
 
       	// Page description text
-		
 		$mform->addElement('html', '<p></p>
 			<div id="titlebar">
 		    </div>
@@ -113,7 +102,7 @@ class add_form extends moodleform {
 			'.get_string('tagspagedesc', 'block_socialbookmark').'
 			<h3> '.  get_string('tagsforthiscourse','block_socialbookmark'). '</h3>
 			<p></p>
-    		'.get_tags());
+    		'.block_socialbookmark_get_tags());
 		
 		$mform->addElement('text', 'tagtitle', get_string('tagtitle','block_socialbookmark'), null);
 		$mform->setType('tagtitle', PARAM_TEXT);
@@ -131,12 +120,37 @@ class add_form extends moodleform {
 }
 
 
-$mform = new add_form();//name of the form you defined in file above.
+$mform = new block_socialbookmark_add_form();//name of the form you defined in file above.
+
+
+if ($mform->is_cancelled()) {
+    //Handle form cancel operation, if cancel button is present on form
+} else if ($fromform = $mform->get_data()) {
+
+  	$record = new stdClass();
+    $record->courseid = $fromform->cid;   
+  	$record->tagname =	$fromform->tagtitle;
+
+  	$DB->insert_record('block_socialbookmark_tags', $record, $returnid=true, $bulk=false);
+  	
+  	echo '<script>window.location="settings.php?id='.$fromform->cid.'"; </script>';
+  	die;
+
+} else {
+  // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
+  // or on the first display of the form.
+ 
+  //Set default data (if any)
+  $mform->set_data($mform);
+  //displays the form
+  $mform->display();
+}
+
 
 /** 
 * Get the collection of tags associated with this course.
  */
-function get_tags() {
+function block_socialbookmark_get_tags() {
 
     global $DB;
     global $cid;
@@ -147,19 +161,18 @@ function get_tags() {
 	$outputtags = '';
 	
 	foreach($result as $rec){
-	    $outputtags .= $rec->tagname .' [ <a href="settings.php?id='.$cid.'&d='.$rec->id.'">'.  get_string('delete','block_socialbookmark'). ' </a>]<br>';
+	    $outputtags .= $rec->tagname .' [ <a href="settings.php?id='.$cid.'&d='.$rec->id.'">'.  
+	                   get_string('delete','block_socialbookmark'). ' </a>]<br>';
 	 }
 
   	return $outputtags;
 }
 
 
-echo $OUTPUT->header();
-$mform->focus();
-$mform->set_data($mform);
-$mform->display();
-echo $OUTPUT->footer();
 
+$mform->focus();
+
+echo $OUTPUT->footer();
 
 
 

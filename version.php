@@ -28,9 +28,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014052815;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2012112900;        // Requires this Moodle version
+$plugin->version   = 2014061416;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->requires  = 2013111803;        // Requires this Moodle version
 $plugin->component = 'block_socialbookmark'; // Full name of the plugin (used for diagnostics)
 $plugin->cron = 300;
-$plugin->release = '1.5';
+$plugin->release = '1.6';
 $plugin->maturity = 'STABLE';

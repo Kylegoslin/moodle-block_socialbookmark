@@ -17,6 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ---------------------------------------------------------------------------------
+Version 1,6
+Date: 14th June 2014
+- Added frankenstyle to function names
+- added require_login
+- upgraded manage.php to use moodle DML offset / limit to help cross database use
+- Moved to moodle form handling
+- Added capabilities
+- Break down of tags relationships into different db records
+ 
 Version 1.5
 Date: 29th May 2014
 - Updated to work on Moodle 2.7.
@@ -62,7 +71,6 @@ Date: 10th March 2014
 - Limit of 10 added to the number of bookmarks that can be outputted on the first page.
 - Regular gets removed from manage.php
 
----------------------------------------------------------
 
 Version: 1.1 
 Date: 7th March 2014
@@ -76,8 +84,6 @@ Date: 7th March 2014
 - Old post references updated to moodle lib style.
 - Version number has been updated
 
-
----------------------------------------------------------
 
 Version: 1.0
 Date 10th Feb 2014

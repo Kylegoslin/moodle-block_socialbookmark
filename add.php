@@ -27,6 +27,7 @@
  */
 require_once("../../config.php");
 global $CFG, $DB;
+require_login();
 $formPath = "$CFG->libdir/formslib.php";
 require_once($formPath);
 $cid = required_param('cid', PARAM_INT);
@@ -37,37 +38,40 @@ $PAGE->navbar->add('Course Page', new moodle_url('../../course/view.php?id=' . $
 $PAGE->navbar->add(get_string('socialbookmark', 'block_socialbookmark'), new moodle_url('admin/manage.php?id=' . $cid . '&p=my'));
 $PAGE->navbar->add(get_string('addnew', 'block_socialbookmark'));
 $PAGE->set_url('/blocks/socialbookmark/add.php');
-$PAGE->set_context(context_course::instance($cid));
-?>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+$context = context_course::instance($cid);
+$PAGE->set_context($context);
+
+if(has_capability('block/socialbookmark:addbookmark',$context)){
+} else {
+  error('Sorry you cant add a bookmark');
+}?>
+<link rel="stylesheet" href="jquery/jquery-ui.css">
+<script src="star/jquery.js"></script>
+<script src="jquery/jquery-ui.js"></script>
 <style>
 
 #maindiv {
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 10px;
-	border:0px solid;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  border:0px solid;
 
-	width: 900px;
+  width: 900px;
 }
 
 #titlebar {
-	font-size: 16px;
+  font-size: 16px;
 }
-
-
 </style>
 <?php
-
 /**
 * Interface for adding a new bookmark to the block.
 * @package block_socialbookmark
 * @copyright 2014 Kyle Goslin, Daniel McSweeney
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
-class add_form extends moodleform {
+class block_socialbookmark_add_form extends moodleform {
  
      /**
      * Class Def creating the user interface for creating
@@ -180,11 +184,11 @@ class add_form extends moodleform {
     // in front of them as a list.
     $tagselectoroutput = '';
     foreach ($attributes as $item) {
-            $vid = $item->id;
-            $value = $item->tagname;
-            if ($value != '') {
-                $tagselectoroutput .='<a href="#" onclick="add_tag(\' '.$value.'\')">'.$value.'</a>, ';
-            }
+        $vid = $item->id;
+        $value = $item->tagname;
+        if ($value != '') {
+            $tagselectoroutput .='<a href="#" onclick="add_tag(\' '.$value.'\')">'.$value.'</a>, ';
+        }
     }
     $mform->addElement('html', '<div style="padding-left:100px; width:500px; left:200px"> <b>'.  
                        get_string('tagsuggestions','block_socialbookmark'). '</b>: '. $tagselectoroutput .'</div>' );
@@ -209,31 +213,57 @@ class add_form extends moodleform {
 }
 
 
-$mform = new add_form();//name of the form you defined in file above.
-
+$mform = new block_socialbookmark_add_form();//name of the form you defined in file above.
 echo $OUTPUT->header();  
-$mform->focus();
-$mform->set_data($mform);
-$mform->display();
-echo $OUTPUT->footer();
+
+//Form processing and displaying is done here
+if ($mform->is_cancelled()) {
+    //Handle form cancel operation, if cancel button is present on form
+} else if ($fromform = $mform->get_data()) {
 
 
-if ($_POST) {
     $record = new stdClass();
     $record->userid = $USER->id;
-  	$record->courseid = $cid;
-  	$record->tagid = get_tag_ids_from_text();
-  	$record->titletext = required_param('title', PARAM_TEXT);
-  	$record->desctext = required_param('desc', PARAM_TEXT);
-  	$record->link = $_POST['url'];
-  	$record->status = 0;
-  	$record->dateadded = time();
+    $record->courseid = $cid;
+    $record->titletext = $fromform->title;
+    $record->desctext = $fromform->desc;
+    $record->link = $fromform->url;
+    $record->status = 0;
+    $record->dateadded = time();
+
+    $bkid = $DB->insert_record('block_socialbookmark', $record, $returnid=true, $bulk=false);
 
 
-  	$DB->insert_record('block_socialbookmark', $record, $returnid=true, $bulk=false);
-  	echo '<script>window.location="admin/manage.php?id='.$cid.'"; </script>';
-  }
+    // Add tag ids into the tag_assc table
+    $tags = explode(' ', block_socialbookmark_get_tag_ids_from_text($fromform->tags));
 
+    foreach ($tags as $tag) {
+        if (!empty($tag)) {
+            $tagassc = new stdClass();
+            $tagassc->bkid = $bkid;
+            $tagassc->cid = $cid;
+            $tagassc->tagid = $tag;
+            $DB->insert_record('block_socialbookmark_assc', $tagassc, $returnid=true, $bulk=false);
+
+        }
+    }
+
+    echo '<script>window.location="admin/manage.php?id='.$cid.'"; </script>';
+
+  //In this case you process validated data. $mform->get_data() returns data posted in form.
+} else {
+  // this branch is executed if the form is submitted but the data doesn't validate and the form should be redisplayed
+  // or on the first display of the form.
+ 
+  //Set default data (if any)
+  $mform->set_data($mform);
+  //displays the form
+  $mform->display();
+}
+
+
+
+echo $OUTPUT->footer();
 
 
 
@@ -241,30 +271,27 @@ if ($_POST) {
 /** Given a tag name, convert the name into the associated
 * id for the tag.
 */
-function get_tag_ids_from_text() {
+function block_socialbookmark_get_tag_ids_from_text($tags) {
 
     global $DB, $cid;
-    $tags = required_param('tags', PARAM_TEXT);
 		$tagtext = trim($tags);
     $tagids = ''; // Id number for each tag stored here.
 		$singletags = explode(', ', $tagtext);
 
     foreach ($singletags as $tag) {
-            $tagtrim = str_replace(array('.', ','), '' , $tag);
-				    $res = $DB->get_records_sql('select * 
+        $tagtrim = str_replace(array('.', ','), '' , $tag);
+				$res = $DB->get_records_sql('select * 
                                          from {block_socialbookmark_tags} 
                                          WHERE tagname = ? 
                                          AND courseid = ?',array($tagtrim, $cid));
 
-            if (empty($res)) {
-                $tagids .= ' ' . add_new_tag($cid, $tagtrim);
-            } else {
-    
-    				foreach ($res as $item) {
-    					$tagids .= ' ' . $item->id;
+        if (empty($res)) {
+            $tagids .= ' ' . block_socialbookmark_add_new_tag($cid, $tagtrim);
+        } else {
+    		    foreach ($res as $item) {
+    				    $tagids .= ' ' . $item->id;
     				}
-
-  				}
+        }
 
 
   		}
@@ -280,7 +307,7 @@ function get_tag_ids_from_text() {
 * @param int $cid course id
 * @param int $tagtext text of the tag
 */
-function add_new_tag($cid, $tagtext) {
+function block_socialbookmark_add_new_tag($cid, $tagtext) {
 
     global $DB, $cid;
 

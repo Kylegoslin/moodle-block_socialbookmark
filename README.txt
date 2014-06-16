@@ -1,7 +1,7 @@
 
 
 
-	---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
  	Social Bookmark Block for Moodle
  	Copyright 2013-2014 Kyle Goslin, Daniel McSweeney
 	Institute of Technology Blanchardstown
@@ -18,7 +18,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 
     Documentation can be found at: 
 
